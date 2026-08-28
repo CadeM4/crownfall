@@ -1,0 +1,9 @@
+/prepared/
+authorization.json
+target.env
+*.pem
+*.key
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.pytest_cache/

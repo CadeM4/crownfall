@@ -1,0 +1,40 @@
+name: crownfall
+
+services:
+  target:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: crownfall-target:local
+    init: true
+    restart: "no"
+    user: "0:0"
+    environment:
+      CROWNFALL_LAB_ID: "${CROWNFALL_LAB_ID:?set CROWNFALL_LAB_ID}"
+      CROWNFALL_OUTER_KEY_HEX: "${CROWNFALL_OUTER_KEY_HEX:?set CROWNFALL_OUTER_KEY_HEX}"
+      CROWNFALL_BIND: "0.0.0.0"
+      CROWNFALL_PORT: "${CROWNFALL_PORT:-8785}"
+    ports:
+      - "${CROWNFALL_BIND:-127.0.0.1}:${CROWNFALL_PORT:-8785}:${CROWNFALL_PORT:-8785}"
+    read_only: true
+    tmpfs:
+      - /run/crownfall:rw,noexec,nosuid,nodev,mode=0755,size=1m
+      - /srv/crownfall:rw,noexec,nosuid,nodev,mode=0755,size=8m
+      - /tmp:rw,noexec,nosuid,nodev,mode=1777,size=4m
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 64
+    mem_limit: 384m
+    cpus: 1.0
+    networks:
+      - lab
+
+networks:
+  lab:
+    internal: true
